@@ -5,6 +5,9 @@
     <visualisation>Other visualisation</visualisation>
     <visualiseitwith>visualise it with</visualiseitwith>
     <date>Date</date>
+    <prefprefix>Preferred namespace prefix</prefprefix>
+    <depiction>Ontology depiction</depiction>
+    <pages>Links</pages>
     <currentversion>Current version</currentversion>
     <previousversion>Previous version</previousversion>
     <backwardcompatiblewith>Backward compatible with</backwardcompatiblewith>

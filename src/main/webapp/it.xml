@@ -5,6 +5,9 @@
     <visualisation>Altre visualizzazioni</visualisation>
     <visualiseitwith>Visualizzala con</visualiseitwith>
     <date>Data</date>
+    <prefprefix>Preferred namespace prefix</prefprefix> <!--TODO-->
+    <depiction>Ontology depiction</depiction> <!--TODO-->
+    <pages>Links</pages> <!--TODO-->
     <currentversion>Versione corrente</currentversion>
     <previousversion>Versione precedente</previousversion>
     <disjointclasses>Classi Disgiunte</disjointclasses>
