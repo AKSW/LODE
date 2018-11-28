@@ -15,7 +15,7 @@ ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-    xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs xd dc rdfs swrl owl2xml owl xsd swrlb rdf f dcterms"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs xd dc rdfs swrl owl2xml owl xsd swrlb rdf f dct"
     xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl" version="2.0"
     xmlns:dc="http://purl.org/dc/elements/1.1/"
     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
@@ -26,7 +26,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
     xmlns:swrlb="http://www.w3.org/2003/11/swrlb#"
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     xmlns:f="http://www.essepuntato.it/xslt/function"
-    xmlns:dcterms="http://purl.org/dc/terms/"
+    xmlns:dct="http://purl.org/dc/terms/"
     xmlns:vann="http://purl.org/vocab/vann/"
     xmlns:foaf="http://xmlns.com/foaf/0.1/"
     xmlns="http://www.w3.org/1999/xhtml">
@@ -130,7 +130,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
     </xsl:template>
     
     <xsl:template name="structure">
-        <xsl:variable name="titles" select="dc:title|dcterms:title" as="element()*" />
+        <xsl:variable name="titles" select="dc:title|dct:title" as="element()*" />
         <head>
             <xsl:choose>
                 <xsl:when test="$titles">
@@ -166,12 +166,12 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
                 </dl>
                 <xsl:call-template name="get.pages" />
-                <xsl:apply-templates select="dc:rights|dcterms:rights" />
+                <xsl:apply-templates select="dc:rights|dct:rights" />
             </div>
             <hr />
             <xsl:apply-templates select="rdfs:comment" mode="ontology" />
             <xsl:call-template name="get.toc" />
-            <xsl:apply-templates select="dc:description[normalize-space() != ''] , dc:description[@*:resource]" mode="ontology" />
+            <xsl:apply-templates select="dc:description[normalize-space() != ''] , dc:description[@*:resource] | dct:description[normalize-space() != ''] , dct:description[@*:resource]" mode="ontology" />
             <xsl:call-template name="get.depiction" />
             <xsl:call-template name="get.classes" />
             <xsl:call-template name="get.objectproperties" />
@@ -190,12 +190,12 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
         <xsl:call-template name="structure" />
     </xsl:template>
     
-    <xsl:template match="dc:description[f:isInLanguage(.)][normalize-space() != '']" mode="ontology">
+    <xsl:template match="dc:description[f:isInLanguage(.)][normalize-space() != '']|dct:description[f:isInLanguage(.)][normalize-space() != '']" mode="ontology">
         <h2 id="introduction"><xsl:value-of select="f:getDescriptionLabel('introduction')" /></h2>
         <xsl:call-template name="get.content" />
     </xsl:template>
     
-    <xsl:template match="dc:description[@*:resource]" mode="ontology">
+    <xsl:template match="dc:description[@*:resource]|dct:description[@*:resource]" mode="ontology">
         <xsl:variable name="url" select="@*:resource" />
         <xsl:variable name="index" select="f:string-last-index-of($url,'\.')" as="xs:integer?" />
         <xsl:variable name="extension" select="substring($url,$index + 1)" as="xs:string?" />
@@ -213,13 +213,13 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
         </p>
     </xsl:template>
     
-    <xsl:template match="dc:description[f:isInLanguage(.)][normalize-space() != '']">
+    <xsl:template match="dc:description[f:isInLanguage(.)][normalize-space() != '']|dct:description[f:isInLanguage(.)][normalize-space() != '']">
         <div class="info">
             <xsl:call-template name="get.content" />
         </div>
     </xsl:template>
     
-    <xsl:template match="dc:description[@*:resource]">
+    <xsl:template match="dc:description[@*:resource]|dct:description[@*:resource]">
         <xsl:variable name="url" select="@*:resource" />
         <xsl:variable name="index" select="f:string-last-index-of($url,'.')" as="xs:integer?" />
         <xsl:variable name="extension" select="substring($url,$index + 1)" as="xs:string?" />
@@ -247,13 +247,13 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
         </div>
     </xsl:template>
     
-    <xsl:template match="dc:rights[f:isInLanguage(.)]|dcterms:rights[ancestor::owl:Ontology][f:isInLanguage(.)]">
+    <xsl:template match="dc:rights[f:isInLanguage(.)]|dct:rights[ancestor::owl:Ontology][f:isInLanguage(.)]">
         <div class="copyright">
             <xsl:call-template name="get.content" />
         </div>
     </xsl:template>
     
-    <xsl:template match="dc:title[f:isInLanguage(.)] | dcterms:title[f:isInLanguage(.)]" mode="ontology">
+    <xsl:template match="dc:title[f:isInLanguage(.)] | dct:title[f:isInLanguage(.)]" mode="ontology">
         <h1>
             <xsl:call-template name="get.title" />
         </h1>
@@ -276,11 +276,11 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
         </dd>
     </xsl:template>
     
-    <xsl:template match="dc:title[f:isInLanguage(.)]">
+    <xsl:template match="dc:title[f:isInLanguage(.)] | dct:title[f:isInLanguage(.)]">
         <xsl:call-template name="get.title" />
     </xsl:template>
     
-    <xsl:template match="dc:date|dc:issued|dc:modified|dcterms:date[ancestor::owl:Ontology]">
+    <xsl:template match="dc:date|dc:issued|dc:modified|dct:date[ancestor::owl:Ontology]|dct:issued[ancestor::owl:Ontology]|dct:modified[ancestor::owl:Ontology]">
         <dt><xsl:value-of select="f:getDescriptionLabel('date')" />:</dt>
         <dd>
             <xsl:choose>
@@ -325,7 +325,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
         </dd>
     </xsl:template>
     
-    <xsl:template match="dc:creator|dc:contributor|dcterms:creator[ancestor::owl:Ontology]|dcterms:contributor[ancestor::owl:Ontology]|dc:publisher[ancestor::owl:Ontology]|dcterms:publisher[ancestor::owl:Ontology]">
+    <xsl:template match="dc:creator|dc:contributor|dct:creator[ancestor::owl:Ontology]|dct:contributor[ancestor::owl:Ontology]|dc:publisher[ancestor::owl:Ontology]|dct:publisher[ancestor::owl:Ontology]">
         <xsl:choose>
             <xsl:when test="@*:resource">
                 <dd>
@@ -342,7 +342,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
         </xsl:choose>
     </xsl:template>
     
-    <xsl:template match="dc:title[f:isInLanguage(.)]|dcterms:title[f:isInLanguage(.)]" mode="head">
+    <xsl:template match="dc:title[f:isInLanguage(.)]|dct:title[f:isInLanguage(.)]" mode="head">
         <title><xsl:value-of select="tokenize(.//text(),$n)[1]" /></title>
     </xsl:template>
     
@@ -363,7 +363,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
             <xsl:call-template name="get.entity.metadata" />
             <xsl:apply-templates select="rdfs:comment" />
             <xsl:call-template name="get.class.description" />
-            <xsl:apply-templates select="dc:description[normalize-space() != ''] , dc:description[@*:resource]" />
+            <xsl:apply-templates select="dc:description[normalize-space() != ''] , dc:description[@*:resource] | dct:description[normalize-space() != ''] , dct:description[@*:resource]" />
         </div>
     </xsl:template>
     
@@ -376,7 +376,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
             <xsl:call-template name="get.entity.metadata" />
             <xsl:apply-templates select="rdfs:comment" />
             <xsl:call-template name="get.individual.description" />
-            <xsl:apply-templates select="dc:description[normalize-space() != ''] , dc:description[@*:resource]" />
+            <xsl:apply-templates select="dc:description[normalize-space() != ''] , dc:description[@*:resource] | dct:description[normalize-space() != ''] , dct:description[@*:resource]" />
         </div>
     </xsl:template>
     
@@ -389,7 +389,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
             <xsl:call-template name="get.entity.metadata" />
             <xsl:apply-templates select="rdfs:comment" />
             <xsl:call-template name="get.property.description" />
-            <xsl:apply-templates select="dc:description[normalize-space() != ''] , dc:description[@*:resource]" />
+            <xsl:apply-templates select="dc:description[normalize-space() != ''] , dc:description[@*:resource] | dct:description[normalize-space() != ''] , dct:description[@*:resource]" />
         </div>
     </xsl:template>
     
@@ -428,10 +428,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
             <xsl:call-template name="get.entity.type.descriptor">
                 <xsl:with-param name="iri" select="$iri" />
             </xsl:call-template>
-            <xsl:if test="exists(dc:title[f:isInLanguage(.)])">
-                <br />
-                <xsl:apply-templates select="dc:title" />
-            </xsl:if>
+            <xsl:apply-templates select="rdfs:label" />
             <xsl:call-template name="get.backlink" />
         </h3>
     </xsl:template>
@@ -564,11 +561,11 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
         <xsl:param name="iri" as="xs:string" />
         
         <xsl:variable name="node" select="$root//rdf:RDF/element()[(@*:about = $iri or @*:ID = $iri) and exists(rdfs:label)][1]" as="element()*" />
-        <!--<xsl:choose>
+        <xsl:choose>
             <xsl:when test="exists($node/rdfs:label)">
                 <xsl:value-of select="$node/rdfs:label[f:isInLanguage(.)]" />
             </xsl:when>
-            <xsl:otherwise>-->
+            <xsl:otherwise>
         <xsl:variable name="localName" as="xs:string?">
             <xsl:variable
                 name="current-index"
@@ -614,8 +611,8 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
                         <xsl:value-of select="normalize-space(lower-case($underscoreOrDash))" />
                     </xsl:otherwise>
                 </xsl:choose>-->
-           <!-- </xsl:otherwise>
-        </xsl:choose>-->
+           </xsl:otherwise>
+        </xsl:choose>
     </xsl:function>
 
     <xsl:template match="owl:Class[not(parent::rdf:RDF)] | rdfs:Datatype[not(parent::rdf:RDF)] | owl:DataRange[not(parent::rdf:RDF)]">
@@ -1343,9 +1340,9 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
     </xsl:template>
     
     <xsl:template name="get.version">
-        <xsl:if test="exists(owl:versionInfo | owl:priorVersion | owl:backwardCompatibleWith | owl:incompatibleWith | dc:date | dcterms:date | dc:modified | dc:issued)">
+        <xsl:if test="exists(owl:versionInfo | owl:priorVersion | owl:backwardCompatibleWith | owl:incompatibleWith | dc:date | dct:date | dc:modified | dct:modified | dc:issued | dct:issued)">
             <dl>
-                <xsl:apply-templates select="dc:date | dcterms:date | dc:modified | dc:issued" />
+                <xsl:apply-templates select="dc:date | dct:date | dc:modified  | dct:modified | dc:issued | dct:issued" />
                 <xsl:apply-templates select="owl:versionInfo" />
                 <xsl:apply-templates select="vann:preferredNamespacePrefix" />
                 <xsl:apply-templates select="owl:priorVersion" />
@@ -1387,17 +1384,17 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
     </xsl:template>
     
     <xsl:template name="get.author">
-        <xsl:if test="exists(dc:creator | dc:contributor | dcterms:creator[ancestor::owl:Ontology] | dcterms:contributor[ancestor::owl:Ontology])">
+        <xsl:if test="exists(dc:creator | dc:contributor | dct:creator[ancestor::owl:Ontology] | dct:contributor[ancestor::owl:Ontology])">
             <dl>
-                <xsl:if test="exists(dc:creator|dcterms:creator[ancestor::owl:Ontology])">
+                <xsl:if test="exists(dc:creator|dct:creator[ancestor::owl:Ontology])">
                     <dt><xsl:value-of select="f:getDescriptionLabel('authors')" />:</dt>
-                    <xsl:apply-templates select="dc:creator|dcterms:creator[ancestor::owl:Ontology]">
+                    <xsl:apply-templates select="dc:creator|dct:creator[ancestor::owl:Ontology]">
                         <xsl:sort select="text()|@*:resource" data-type="text" order="ascending" />
                     </xsl:apply-templates>
                 </xsl:if>
-                <xsl:if test="exists(dc:contributor|dcterms:contributor[ancestor::owl:Ontology])">
+                <xsl:if test="exists(dc:contributor|dct:contributor[ancestor::owl:Ontology])">
                     <dt><xsl:value-of select="f:getDescriptionLabel('contributors')" />:</dt>
-                    <xsl:apply-templates select="dc:contributor|dcterms:contributor[ancestor::owl:Ontology]">
+                    <xsl:apply-templates select="dc:contributor|dct:contributor[ancestor::owl:Ontology]">
                         <xsl:sort select="text()|@*:resource" data-type="text" order="ascending" />
                     </xsl:apply-templates>
                 </xsl:if>
@@ -1434,10 +1431,10 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
     </xsl:template>
     
     <xsl:template name="get.publisher">
-        <xsl:if test="exists(dc:publisher | dcterms:publisher)">
+        <xsl:if test="exists(dc:publisher | dct:publisher)">
             <dl>
                 <dt><xsl:value-of select="f:getDescriptionLabel('publisher')" />:</dt>
-                <xsl:apply-templates select="dc:publisher|dcterms:publisher">
+                <xsl:apply-templates select="dc:publisher|dct:publisher">
                     <xsl:sort select="text()|@*:resource" data-type="text" order="ascending" />
                 </xsl:apply-templates>
             </dl>
@@ -1448,7 +1445,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
         <div id="toc">
             <h2><xsl:value-of select="f:getDescriptionLabel('toc')" /></h2>
             <ol>
-                <xsl:if test="exists(//owl:Ontology/dc:description[normalize-space() != ''])">
+                <xsl:if test="exists(//owl:Ontology/dc:description[normalize-space() != ''] | //owl:Ontology/dct:description[normalize-space() != ''])">
                     <li><a href="#introduction"><xsl:value-of select="f:getDescriptionLabel('introduction')" /></a></li>
                 </xsl:if>
                 <xsl:if test="exists(//owl:Ontology/foaf:depiction)">

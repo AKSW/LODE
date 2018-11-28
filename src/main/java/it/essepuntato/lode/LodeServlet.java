@@ -27,6 +27,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -148,6 +151,10 @@ public class LodeServlet extends HttpServlet {
 
 				if (useOWLAPI) {
 					content = parseWithOWLAPI(ontologyURL, useOWLAPI, considerImportedOntologies, considerImportedClosure, useReasoner);
+				} else if(ontologyURL.toURI().getScheme().equals("file")){		//a local file
+					File lf = new File(ontologyURL.toString().replace("file://", ""));
+					if(lf.exists())
+						content = new String(Files.readAllBytes(lf.toPath()), StandardCharsets.UTF_8);
 				} else {
 					content = extractor.exec(ontologyURL);
 				}
