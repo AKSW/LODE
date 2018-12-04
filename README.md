@@ -6,8 +6,10 @@ example usage:
 1. launch application with
 
 	mvn clean jetty:run
+	
+2. transform ontology into RDF/XML-ABBREV serialization
 
-2. test /extract
+3. test /extract
 
 	+ DOLCE ontology
 		
