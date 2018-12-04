@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <labels>
-    <ontology>Ontology</ontology>
-    <ontologysource>Ontology source</ontologysource>
-    <visualisation>Other visualisation</visualisation>
+    <ontology>Ontologie</ontology>
+    <ontologysource>Ontologie Datei</ontologysource>
+    <visualisation>Visualisierung</visualisation>
     <visualiseitwith>visualise it with</visualiseitwith>
-    <date>Date</date>
-    <issued>Issued</issued>
-    <modified>Last modified</modified>
-    <prefprefix>Preferred namespace prefix</prefprefix>
-    <depiction>Ontology depiction</depiction>
+    <date>Datum</date>
+    <issued>Veröffentlicht</issued>
+    <modified>Zuletzt bearbeitet</modified>
+    <prefprefix>Namensraum Präfix</prefprefix>
+    <depiction>Abbildung</depiction>
     <pages>Links</pages>
-    <currentversion>Current version</currentversion>
-    <previousversion>Previous version</previousversion>
-    <backwardcompatiblewith>Backward compatible with</backwardcompatiblewith>
-    <incompatibleWith>Incompatible with</incompatibleWith>
+    <currentversion>Version</currentversion>
+    <previousversion>Vorherige Version</previousversion>
+    <backwardcompatiblewith>Rückwärtskompatibel mit</backwardcompatiblewith>
+    <incompatibleWith>Inkompatibel mit</incompatibleWith>
     <abstract>Abstract</abstract>
-    <introduction>Introduction</introduction>
+    <introduction>Einleitung</introduction>
+    <!--TODO-->
     <disjointclasses>All Disjoint Classes</disjointclasses>
     <subclassdefinition>General Subclass Definition</subclassdefinition>
     <equivalentdefinition>General Equivalent Definition</equivalentdefinition>

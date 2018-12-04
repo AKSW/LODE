@@ -5,6 +5,8 @@
     <visualisation>Autre visualisation</visualisation>
     <visualiseitwith>Visualiser avec</visualiseitwith>
     <date>Date</date>
+    <issued>Date d'émission</issued>
+    <modified>Dernière modification</modified>
     <prefprefix>Preferred namespace prefix</prefprefix> <!--TODO-->
     <depiction>Ontology depiction</depiction> <!--TODO-->
     <pages>Links</pages> <!--TODO-->

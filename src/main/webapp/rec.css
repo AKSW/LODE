@@ -16,6 +16,7 @@ body {
   background-position: top left;
   background-attachment: fixed;
   background-repeat: no-repeat;
+  max-width: 1400px;
 }
 :link { color: #00C; background: transparent }
 :visited { color: #609; background: transparent }
@@ -81,5 +82,4 @@ ul.toc, ol.toc {
 }
 
 body {
-  background-image: url(http://lode.sourceforge.net/img/LODELogo.png);
-}
+  background-image: url(http://lode.sourceforge.net/i

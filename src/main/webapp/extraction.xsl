@@ -40,6 +40,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
     <xsl:param name="lang" select="'en'" as="xs:string" />
     <xsl:param name="css-location" select="'./'" as="xs:string" />
     <xsl:param name="source" as="xs:string" select="''" />
+    <xsl:param name="use-labels" as="xs:boolean" select="false()" />
     <xsl:param name="ontology-url" select="/rdf:RDF/owl:Ontology/(@*:about|@*:ID)"  as="xs:string" />
     <xsl:param name="onto-uri" select="/rdf:RDF/owl:Ontology/(@*:about|@*:ID)"  as="xs:string" />
     
@@ -280,11 +281,12 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
         <xsl:call-template name="get.title" />
     </xsl:template>
     
-    <xsl:template match="dc:date|dc:issued|dc:modified|dct:date[ancestor::owl:Ontology]|dct:issued[ancestor::owl:Ontology]|dct:modified[ancestor::owl:Ontology]">
-        <dt><xsl:value-of select="f:getDescriptionLabel('date')" />:</dt>
+    <xsl:template match="dc:date[ancestor::owl:Ontology]|dc:issued[ancestor::owl:Ontology]|dc:modified[ancestor::owl:Ontology]|dct:date[ancestor::owl:Ontology]|dct:issued[ancestor::owl:Ontology]|dct:modified[ancestor::owl:Ontology]">
+        <xsl:variable name="prop" select="if (ends-with(name(), 'modified')) then 'modified' else if (ends-with(name(), 'issued')) then 'issued' else 'date'" />
+        <dt><xsl:value-of select="f:getDescriptionLabel($prop)" />:</dt>
         <dd>
             <xsl:choose>
-                <xsl:when test="matches(.,'\d\d\d\d-\d\d-\d\d')">
+                <xsl:when test="matches(.,'^\d\d\d\d-\d\d-\d\d.*')">
                     <xsl:variable name="tokens" select="tokenize(.,'-')" />
                     <xsl:value-of select="$tokens[3],$tokens[2],$tokens[1]" separator="/" />
                 </xsl:when>
@@ -562,37 +564,22 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
         
         <xsl:variable name="node" select="$root//rdf:RDF/element()[(@*:about = $iri or @*:ID = $iri) and exists(rdfs:label)][1]" as="element()*" />
         <xsl:choose>
-            <xsl:when test="exists($node/rdfs:label)">
+            <xsl:when test="$use-labels and exists($node/rdfs:label)">
                 <xsl:value-of select="$node/rdfs:label[f:isInLanguage(.)]" />
             </xsl:when>
             <xsl:otherwise>
-        <xsl:variable name="localName" as="xs:string?">
-            <xsl:variable
-                name="current-index"
-                select="if (contains($iri,'#'))
-                            then f:string-first-index-of($iri,'#')
-                            else f:string-last-index-of(replace($iri,'://','---'),'/')"
-                as="xs:integer?" />
-            <xsl:if test="exists($current-index) and string-length($iri) != $current-index">
-                <xsl:sequence select="substring($iri,$current-index + 1)" />
-            </xsl:if>
-        </xsl:variable>
-        <xsl:variable name="prefix" select="f:getPrefixFromIRI($iri)" as="xs:string*" />
-        <xsl:choose>
-            <xsl:when test="empty($prefix)">
-                <xsl:value-of select="$iri" />
-            </xsl:when>
-            <xsl:otherwise>
-                <xsl:choose>
-                    <xsl:when test="f:getPrefixFromIRI($onto-uri) = f:getPrefixFromIRI($iri)">
-                        <xsl:value-of select="substring-after($iri, $prefixes-uris[index-of($prefixes-uris,$prefix)[1] + 1])" />
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <xsl:value-of select="concat($prefix,':',substring-after($iri, $prefixes-uris[index-of($prefixes-uris,$prefix)[1] + 1]))" />
-                    </xsl:otherwise>
-                </xsl:choose>
-            </xsl:otherwise>
-        </xsl:choose>
+                <xsl:variable name="localName" as="xs:string?">
+                    <xsl:variable
+                        name="current-index"
+                        select="if (contains($iri,'#'))
+                                    then f:string-first-index-of($iri,'#')
+                                    else f:string-last-index-of(replace($iri,'://','---'),'/')"
+                        as="xs:integer?" />
+                    <xsl:if test="exists($current-index) and string-length($iri) != $current-index">
+                        <xsl:sequence select="substring($iri,$current-index + 1)" />
+                    </xsl:if>
+                </xsl:variable>
+                <xsl:value-of select="f:getPrefixedIRI($iri)" />
                 <!--<xsl:choose>
                     <xsl:when test="string-length($localName) = 0">
                         <xsl:variable name="prefix" select="f:getPrefixFromIRI($iri)" as="xs:string*" />
@@ -775,6 +762,14 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
             <xsl:with-param name="type" select="'namedindividual'" tunnel="yes" />
             <xsl:with-param name="op" select="'value'" as="xs:string" />
         </xsl:call-template>
+        <xsl:if test="@xml:lang">
+            <xsl:text> @</xsl:text>
+            <xsl:value-of select="@xml:lang" />
+        </xsl:if>
+        <xsl:if test="@*:datatype">
+            <xsl:text> as </xsl:text>
+            <a href="{@*:datatype}"><xsl:value-of select="f:getPrefixedIRI(@*:datatype)" /></a>
+        </xsl:if>
     </xsl:template>
     
     <xsl:template match="owl:cardinality | owl:qualifiedCardinality">
@@ -1755,7 +1750,28 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
             </xsl:if>
         </xsl:if>
     </xsl:function>
-    
+
+    <xsl:function name="f:getPrefixedIRI" as="xs:string?">
+        <xsl:param name="iri" as="xs:string" />
+        <xsl:variable name="prefix" select="f:getPrefixFromIRI($iri)" as="xs:string*" />
+
+        <xsl:choose>
+            <xsl:when test="empty($prefix)">
+                <xsl:value-of select="$iri" />
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:choose>
+                    <xsl:when test="f:getPrefixFromIRI($onto-uri) = $prefix">
+                        <xsl:value-of select="substring-after($iri, $prefixes-uris[index-of($prefixes-uris,$prefix)[1] + 1])" />
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:value-of select="concat($prefix,':',substring-after($iri, $prefixes-uris[index-of($prefixes-uris,$prefix)[1] + 1]))" />
+                    </xsl:otherwise>
+                </xsl:choose>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:function>
+
     <xsl:function name="f:hasSubclasses" as="xs:boolean">
         <xsl:param name="el" as="element()" />
         <xsl:value-of select="exists($rdf/owl:Class[some $res in rdfs:subClassOf/@*:resource satisfies $res = $el/(@*:about|@*:ID)])" />

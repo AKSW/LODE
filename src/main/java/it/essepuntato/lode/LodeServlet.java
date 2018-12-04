@@ -29,7 +29,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -112,12 +111,18 @@ public class LodeServlet extends HttpServlet {
 		super();
 	}
 
+	private void setAccessControlHeaders(HttpServletResponse resp) {
+		resp.setHeader("Access-Control-Allow-Origin", "*");
+		resp.setHeader("Access-Control-Allow-Methods", "GET");
+	}
+
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");
+		setAccessControlHeaders(response);
 
 		resolvePaths(request); /* Used instead of the SourceForge repo */
 		response.setCharacterEncoding("UTF-8");
