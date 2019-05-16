@@ -121,7 +121,7 @@ public class LodeServlet extends HttpServlet {
 	 *      response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.setContentType("text/html");
+ 		response.setContentType("text/html");
 		setAccessControlHeaders(response);
 
 		resolvePaths(request); /* Used instead of the SourceForge repo */
@@ -134,11 +134,15 @@ public class LodeServlet extends HttpServlet {
 		for (int i = 0; i < maxTentative; i++) {
 			try {
 				String stringURL = request.getParameter("url");
+				String uls = request.getParameter("useLabels");
+				boolean useLabels = true;
+				if(uls != null && uls.toLowerCase().equals("false"))
+					useLabels = false;
 
 				URL ontologyURL = new URL(stringURL);
 				HttpURLConnection.setFollowRedirects(true);
 
-				String content = "";
+				String content = null;
 
 				boolean useOWLAPI = new Boolean(request.getParameter("owlapi"));
 				boolean considerImportedOntologies = new Boolean(request.getParameter("imported"));
@@ -157,7 +161,7 @@ public class LodeServlet extends HttpServlet {
 				if (useOWLAPI) {
 					content = parseWithOWLAPI(ontologyURL, useOWLAPI, considerImportedOntologies, considerImportedClosure, useReasoner);
 				} else if(ontologyURL.toURI().getScheme().equals("file")){		//a local file
-					File lf = new File(ontologyURL.toString().replace("file://", ""));
+					File lf = new File(ontologyURL.toString().replaceAll("file:/+", ""));
 					if(lf.exists())
 						content = new String(Files.readAllBytes(lf.toPath()), StandardCharsets.UTF_8);
 				} else {
@@ -172,7 +176,10 @@ public class LodeServlet extends HttpServlet {
 				 * useReasoner); }
 				 */
 
-				content = applyXSLTTransformation(content, stringURL, lang);
+				if(content == null)
+					throw new IllegalStateException("No content was extracted from provided location");
+
+				content = applyXSLTTransformation(content, stringURL, lang, useLabels);
 
 				out.println(content);
 				i = maxTentative;
@@ -445,7 +452,7 @@ public class LodeServlet extends HttpServlet {
 		return "<html>" + "<head><title>LODE error</title></head>" + "<body>" + "<h2>" + "LODE error" + "</h2>" + "<p><strong>Reason: </strong>" + e.getMessage() + "</p>" + "</body>" + "</html>";
 	}
 
-	private String applyXSLTTransformation(String source, String ontologyUrl, String lang) throws TransformerException {
+	private String applyXSLTTransformation(String source, String ontologyUrl, String lang, boolean useLabels) throws TransformerException {
 		TransformerFactory tfactory = new net.sf.saxon.TransformerFactoryImpl();
 
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -456,6 +463,7 @@ public class LodeServlet extends HttpServlet {
 		transformer.setParameter("lang", lang);
 		transformer.setParameter("ontology-url", ontologyUrl);
 		transformer.setParameter("source", cssLocation + "source");
+		transformer.setParameter("use-labels", useLabels);
 
 		StreamSource inputSource = new StreamSource(new StringReader(source));
 
