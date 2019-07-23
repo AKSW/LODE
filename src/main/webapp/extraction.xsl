@@ -14,9 +14,9 @@ WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs xd dc rdfs swrl owl2xml owl xsd swrlb rdf f dct"
-    xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl" version="2.0"
+    xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl"
     xmlns:dc="http://purl.org/dc/elements/1.1/"
     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
     xmlns:swrl="http://www.w3.org/2003/11/swrl#"
@@ -36,7 +36,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
     <xsl:include href="structural-reasoner.xsl"/>
     
     <xsl:output encoding="UTF-8" indent="no" method="xhtml" />
-    
+
     <xsl:param name="lang" select="'en'" as="xs:string" />
     <xsl:param name="css-location" select="'./'" as="xs:string" />
     <xsl:param name="source" as="xs:string" select="''" />
@@ -354,41 +354,50 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
     <xsl:template match="element()|text()[normalize-space() = '']" />
     
     <xsl:template match="owl:Class | rdfs:Class">
-        <div id="{f:getResourceId(.)}" class="entity">
+        <div id="{f:getResourceId(.)}" class="thing">
             <xsl:call-template name="get.entity.name">
                 <xsl:with-param name="toc" select="'classes'" tunnel="yes" as="xs:string" />
                 <xsl:with-param name="toc.string" select="f:getDescriptionLabel('classtoc')" tunnel="yes" as="xs:string" />
             </xsl:call-template>
-            <xsl:call-template name="get.entity.metadata" />
-            <xsl:apply-templates select="rdfs:comment" />
-            <xsl:call-template name="get.class.description" />
-            <xsl:apply-templates select="dc:description[normalize-space() != ''] , dc:description[@*:resource] | dct:description[normalize-space() != ''] , dct:description[@*:resource]" />
+            <div class="entity">
+                <xsl:call-template name="get.entity.metadata" />
+                <xsl:apply-templates select="rdfs:comment" />
+                <xsl:call-template name="get.class.description" />
+                <xsl:apply-templates select="dc:description[normalize-space() != ''] , dc:description[@*:resource] | dct:description[normalize-space() != ''] , dct:description[@*:resource]" />
+                <xsl:call-template name="get.example" />
+            </div>
         </div>
     </xsl:template>
     
     <xsl:template match="owl:NamedIndividual">
-        <div id="{f:getResourceId(.)}" class="entity">
+        <div id="{f:getResourceId(.)}" class="thing">
             <xsl:call-template name="get.entity.name">
                 <xsl:with-param name="toc" select="'namedindividuals'" tunnel="yes" as="xs:string" />
                 <xsl:with-param name="toc.string" select="f:getDescriptionLabel('namedindividualtoc')" tunnel="yes" as="xs:string" />
             </xsl:call-template>
-            <xsl:call-template name="get.entity.metadata" />
-            <xsl:apply-templates select="rdfs:comment" />
-            <xsl:call-template name="get.individual.description" />
-            <xsl:apply-templates select="dc:description[normalize-space() != ''] , dc:description[@*:resource] | dct:description[normalize-space() != ''] , dct:description[@*:resource]" />
+            <div class="entity">
+                <xsl:call-template name="get.entity.metadata" />
+                <xsl:apply-templates select="rdfs:comment" />
+                <xsl:call-template name="get.individual.description" />
+                <xsl:apply-templates select="dc:description[normalize-space() != ''] , dc:description[@*:resource] | dct:description[normalize-space() != ''] , dct:description[@*:resource]" />
+                <xsl:call-template name="get.example" />
+            </div>
         </div>
     </xsl:template>
     
     <xsl:template match="owl:ObjectProperty | owl:DatatypeProperty | owl:AnnotationProperty">
-        <div id="{f:getResourceId(.)}" class="entity">
+        <div id="{f:getResourceId(.)}" class="thing">
             <xsl:call-template name="get.entity.name">
                 <xsl:with-param name="toc" select="if (self::owl:ObjectProperty) then 'objectproperties' else if (self::owl:AnnotationProperty) then 'annotationproperties' else 'dataproperties'" tunnel="yes" as="xs:string" />
                 <xsl:with-param name="toc.string" select="if (self::owl:ObjectProperty) then f:getDescriptionLabel('objectpropertytoc') else if (self::owl:AnnotationProperty) then f:getDescriptionLabel('annotationpropertytoc') else f:getDescriptionLabel('datapropertytoc')" tunnel="yes" as="xs:string" />
             </xsl:call-template>
-            <xsl:call-template name="get.entity.metadata" />
-            <xsl:apply-templates select="rdfs:comment" />
-            <xsl:call-template name="get.property.description" />
-            <xsl:apply-templates select="dc:description[normalize-space() != ''] , dc:description[@*:resource] | dct:description[normalize-space() != ''] , dct:description[@*:resource]" />
+            <div class="entity">
+                <xsl:call-template name="get.entity.metadata" />
+                <xsl:apply-templates select="rdfs:comment" />
+                <xsl:call-template name="get.property.description" />
+                <xsl:apply-templates select="dc:description[normalize-space() != ''] , dc:description[@*:resource] | dct:description[normalize-space() != ''] , dct:description[@*:resource]" />
+                <xsl:call-template name="get.example" />
+            </div>
         </div>
     </xsl:template>
     
@@ -422,7 +431,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
     
     <xsl:template match="rdfs:label[f:isInLanguage(.)]">
         <xsl:variable name="iri" select="ancestor::element()/(@*:about|@*:ID)" as="xs:string*" />
-        <h3>
+        <h3 class="entity-name">
             <xsl:value-of select="f:getLabel($iri)" />
             <xsl:call-template name="get.entity.type.descriptor">
                 <xsl:with-param name="iri" select="$iri" />
@@ -1344,16 +1353,13 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
         <xsl:choose>
             <xsl:when test="exists((@*:about|@*:ID)[normalize-space() != ''])">
                 <xsl:variable name="url" select="@*:about|@*:ID" as="xs:string" />
-                <a name="{$url}" />
-                <xsl:if test="starts-with($url, if (ends-with($onto-uri,'#')) then $onto-uri else concat($onto-uri, '#'))">
-                    <a name="{substring-after($url, '#')}" />
-                </xsl:if>
+                <a name="{$url}" href="{$url}" />
                 <xsl:choose>
                     <xsl:when test="exists(rdfs:label)">
                         <xsl:apply-templates select="rdfs:label" />
                     </xsl:when>
                     <xsl:otherwise>
-                        <h3>
+                        <h3 class="entity-name">
                             <xsl:value-of select="f:getLabel($url)" />
                             <xsl:call-template name="get.entity.type.descriptor">
                                 <xsl:with-param name="iri" select="@*:about|@*:ID" as="xs:string" />
@@ -1395,9 +1401,25 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
                     <xsl:value-of select="f:getDescriptionLabel('depiction')" /><xsl:text> </xsl:text>
                     <xsl:call-template name="get.backlink" />
                 </h2>
-                <a href="{foaf:depiction/@*:resource}" target="_blank">
-                    <img src="{foaf:depiction/@*:resource}" alt="alt tag" style="max-width:100%;"/>
+                <xsl:variable name="url" select="foaf:depiction/@*:resource" as="xs:string" />
+                <a href="{$url}" target="_blank">
+                    <img src="{$url}" alt="alt tag" style="max-width:100%;"/>
                 </a>
+            </div>
+        </xsl:if>
+    </xsl:template>
+
+    <xsl:template name="get.example">
+        <xsl:if test="exists(vann:example)">
+            <a href="#{generate-id(.)}" title="click to expand example">
+                <xsl:value-of select="f:getDescriptionLabel('example')" />:
+            </a>
+            <div class="example" id="{generate-id(.)}">
+                <xsl:variable name="u" select="vann:example/@*:resource" as="xs:string" />
+                <pre>
+                    <xsl:value-of select="unparsed-text($u)"/>
+                </pre>
+                <a href="#{f:getResourceId(.)}" title="click to close example">close example</a>
             </div>
         </xsl:if>
     </xsl:template>
