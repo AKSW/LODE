@@ -10,6 +10,7 @@
     <prefprefix>Preferred namespace prefix</prefprefix>
     <depiction>Ontology depiction</depiction>
     <pages>Links</pages>
+    <example>Example</example>
     <currentversion>Current version</currentversion>
     <previousversion>Previous version</previousversion>
     <backwardcompatiblewith>Backward compatible with</backwardcompatiblewith>

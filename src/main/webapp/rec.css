@@ -55,8 +55,6 @@ p.copyright small { font-size: small }
 @media screen {  /* hide from IE3 */
 a[href]:hover { background: #ffa }
 }
-
-pre { margin-left: 2em }
 /*
 p {
   margin-top: 0.6em;
@@ -80,6 +78,3 @@ ul.toc, ol.toc {
   dt { pause-before: 20% }
   pre { speak-punctuation: code } 
 }
-
-body {
-  background-image: url(http://lode.sourceforge.net/i

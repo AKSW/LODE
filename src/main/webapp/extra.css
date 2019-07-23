@@ -23,7 +23,7 @@ h1 {
 .entity {
     border: 1px solid navy;
     margin:5px 0px 5px 0px;
-    padding: 5px;    
+    padding: 5px;
 }
 
 .type-c {
@@ -74,12 +74,21 @@ dt {
     margin-top:5px;
 }
 
+.example {
+    display: none;
+    clear: both;
+}
+
+.example:target  {
+    display: block;
+}
+
 .description {
-    border-top: 1px dashed gray;
-    border-bottom: 1px dashed gray;
+    border: 1px dashed #2F6FAB;
     background-color: rgb(242, 243, 244);
     margin-top:5px;
-    padding-bottom:5px;
+    margin-bottom:10px;
+    padding: 1em;
 }
 
 .description dl {

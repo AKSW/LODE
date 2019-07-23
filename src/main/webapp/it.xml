@@ -10,6 +10,7 @@
     <prefprefix>Preferred namespace prefix</prefprefix> <!--TODO-->
     <depiction>Ontology depiction</depiction> <!--TODO-->
     <pages>Links</pages> <!--TODO-->
+    <example>Example</example> <!--TODO-->
     <currentversion>Versione corrente</currentversion>
     <previousversion>Versione precedente</previousversion>
     <disjointclasses>Classi Disgiunte</disjointclasses>

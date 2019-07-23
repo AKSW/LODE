@@ -10,6 +10,7 @@
     <prefprefix>Preferred namespace prefix</prefprefix> <!--TODO-->
     <depiction>Ontology depiction</depiction> <!--TODO-->
     <pages>Links</pages> <!--TODO-->
+    <example>Example</example> <!--TODO-->
     <currentversion>Version courante</currentversion>
     <previousversion>Précédente version</previousversion>
     <backwardcompatiblewith>Backward compatible with</backwardcompatiblewith>

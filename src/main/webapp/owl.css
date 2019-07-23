@@ -210,7 +210,6 @@ table.canonicalparsing td.two {
 /* override mediawiki's beautiful DL styling... */
 dl {
     background: white;
-    width: 100%;
     border: none;
     margin-top: 0;
     margin-bottom: 0;
