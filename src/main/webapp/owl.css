@@ -242,6 +242,8 @@ pre {
   color:black;
   line-height:1.1em;
   padding:1em;
+  margin-top: 0;
+  margin-bottom: 3px;
 }
 
 .image object {

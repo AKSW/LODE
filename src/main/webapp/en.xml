@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <labels>
     <ontology>Ontology</ontology>
-    <ontologysource>Ontology source</ontologysource>
-    <visualisation>Other visualisation</visualisation>
+    <ontologysource>source file</ontologysource>
+    <visualisation>Ontology files</visualisation>
     <visualiseitwith>visualise it with</visualiseitwith>
     <date>Date</date>
     <issued>Issued</issued>
@@ -57,10 +57,10 @@
     <backto>back to</backto>
     <class>class</class>
     <classes>Classes</classes>
-    <objectproperty>object property</objectproperty>
-    <objectproperties>Object Properties</objectproperties>
-    <dataproperty>data property</dataproperty>
-    <dataproperties>Data Properties</dataproperties>
+    <objectproperty>relation</objectproperty>
+    <objectproperties>Relations</objectproperties>
+    <dataproperty>attribute</dataproperty>
+    <dataproperties>Attributes</dataproperties>
     <namedindividual>named individual</namedindividual>
     <namedindividuals>Named Individuals</namedindividuals>
     <annotationproperty>annotation property</annotationproperty>
@@ -75,10 +75,10 @@
     <endnote>This HTML document was obtained by processing the OWL ontology source code through</endnote>
     <developedby>developed by</developedby>
     <or>or</or>
-    <classtoc>Class ToC</classtoc>
-    <objectpropertytoc>Object Property ToC</objectpropertytoc>
-    <datapropertytoc>Data Property ToC</datapropertytoc>
-    <annotationpropertytoc>Annotation Property ToC</annotationpropertytoc>
-    <namedindividualtoc>Named Individual ToC</namedindividualtoc>
+    <classtoc>Classes</classtoc>
+    <objectpropertytoc>Relations</objectpropertytoc>
+    <datapropertytoc>Attributes</datapropertytoc>
+    <annotationpropertytoc>Annotation Properties</annotationpropertytoc>
+    <namedindividualtoc>Named Individuals</namedindividualtoc>
     <hascharacteristics>has characteristics</hascharacteristics>
 </labels>

@@ -173,7 +173,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
             <xsl:apply-templates select="rdfs:comment" mode="ontology" />
             <xsl:call-template name="get.toc" />
             <xsl:apply-templates select="dc:description[normalize-space() != ''] , dc:description[@*:resource] | dct:description[normalize-space() != ''] , dct:description[@*:resource]" mode="ontology" />
-            <xsl:call-template name="get.depiction" />
+            <xsl:call-template name="get.ontology.depiction" />
             <xsl:call-template name="get.classes" />
             <xsl:call-template name="get.objectproperties" />
             <xsl:call-template name="get.dataproperties" />
@@ -364,6 +364,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
                 <xsl:apply-templates select="rdfs:comment" />
                 <xsl:call-template name="get.class.description" />
                 <xsl:apply-templates select="dc:description[normalize-space() != ''] , dc:description[@*:resource] | dct:description[normalize-space() != ''] , dct:description[@*:resource]" />
+                <xsl:call-template name="get.depiction" />
                 <xsl:call-template name="get.example" />
             </div>
         </div>
@@ -380,6 +381,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
                 <xsl:apply-templates select="rdfs:comment" />
                 <xsl:call-template name="get.individual.description" />
                 <xsl:apply-templates select="dc:description[normalize-space() != ''] , dc:description[@*:resource] | dct:description[normalize-space() != ''] , dct:description[@*:resource]" />
+                <xsl:call-template name="get.depiction" />
                 <xsl:call-template name="get.example" />
             </div>
         </div>
@@ -396,6 +398,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
                 <xsl:apply-templates select="rdfs:comment" />
                 <xsl:call-template name="get.property.description" />
                 <xsl:apply-templates select="dc:description[normalize-space() != ''] , dc:description[@*:resource] | dct:description[normalize-space() != ''] , dct:description[@*:resource]" />
+                <xsl:call-template name="get.depiction" />
                 <xsl:call-template name="get.example" />
             </div>
         </div>
@@ -1317,10 +1320,10 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
     <xsl:template name="get.ontology.url">
         <xsl:if test="exists((@*:about|@*:ID)[normalize-space() != ''])">
             <dl>
-                <dt>IRI:</dt>
+                <dt>URI:</dt>
                 <dd><xsl:value-of select="@*:about|@*:ID" /></dd>
                 <xsl:if test="exists(owl:versionIRI)">
-                    <dt>Version IRI:</dt>
+                    <dt>Version URI:</dt>
                     <dd><xsl:value-of select="owl:versionIRI/@*:resource" /></dd>
                 </xsl:if>
             </dl>
@@ -1394,34 +1397,38 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
         </xsl:if>
     </xsl:template>
 
-    <xsl:template name="get.depiction">
+    <xsl:template name="get.ontology.depiction">
         <xsl:if test="exists(foaf:depiction)">
+            <h2>
+                <xsl:value-of select="f:getDescriptionLabel('depiction')" /><xsl:text> </xsl:text>
+                <xsl:call-template name="get.backlink" />
+            </h2>
             <div id="depiction">
-                <h2>
-                    <xsl:value-of select="f:getDescriptionLabel('depiction')" /><xsl:text> </xsl:text>
-                    <xsl:call-template name="get.backlink" />
-                </h2>
-                <xsl:variable name="url" select="foaf:depiction/@*:resource" as="xs:string" />
-                <a href="{$url}" target="_blank">
-                    <img src="{$url}" alt="alt tag" style="max-width:100%;"/>
-                </a>
+                <xsl:call-template name="get.depiction" />
             </div>
         </xsl:if>
     </xsl:template>
 
+    <xsl:template name="get.depiction">
+        <xsl:if test="exists(foaf:depiction)">
+            <xsl:variable name="url" select="foaf:depiction/@*:resource" as="xs:string" />
+            <img src="{$url}" alt="alt tag" class="entity-depiction"/>
+        </xsl:if>
+    </xsl:template>
+
     <xsl:template name="get.example">
-        <xsl:if test="exists(vann:example)">
-            <a href="#{generate-id(.)}" title="click to expand example">
-                <xsl:value-of select="f:getDescriptionLabel('example')" />:
+        <xsl:for-each select="vann:example">
+            <a href="#{generate-id(.)}" title="click to expand example" class="example-link">
+                <button class="example-button"><xsl:value-of select="f:getDescriptionLabel('example')" /></button>
             </a>
             <div class="example" id="{generate-id(.)}">
-                <xsl:variable name="u" select="vann:example/@*:resource" as="xs:string" />
+                <xsl:variable name="u" select="@*:resource" as="xs:string" />
                 <pre>
                     <xsl:value-of select="unparsed-text($u)"/>
                 </pre>
                 <a href="#{f:getResourceId(.)}" title="click to close example">close example</a>
             </div>
-        </xsl:if>
+        </xsl:for-each>
     </xsl:template>
 
     <xsl:template name="get.pages">
@@ -1487,7 +1494,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
     
     <xsl:template name="get.entity.url">
         <p>
-            <strong>IRI:</strong>
+            <strong>URI:</strong>
             <xsl:text> </xsl:text>
             <xsl:value-of select="@*:about|@*:ID" />
         </p>
@@ -1809,7 +1816,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
     <xsl:function name="f:getResourceId" as="xs:string">
         <xsl:param name="el" as="element()" />
-        <xsl:variable name="iri" select="$el/(@*:about|@*:ID)" as="xs:string" />
+        <xsl:variable name="iri" select="$el/(@*:about|@*:ID|@*:resource)" as="xs:string" />
         <xsl:value-of select="f:getPrefixedIRI($iri)" />
     </xsl:function>
     

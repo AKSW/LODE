@@ -114,6 +114,7 @@ public class LodeServlet extends HttpServlet {
 	private void setAccessControlHeaders(HttpServletResponse resp) {
 		resp.setHeader("Access-Control-Allow-Origin", "*");
 		resp.setHeader("Access-Control-Allow-Methods", "GET");
+		resp.addHeader("Access-Control-Allow-Credentials", "true");
 	}
 
 	/**

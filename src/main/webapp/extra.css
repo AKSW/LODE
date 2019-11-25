@@ -27,6 +27,7 @@ h1 {
 
 .entity {
     padding: 5px;
+    border: 1px #48A23F;
 }
 
 h3.entity-name {
@@ -38,6 +39,12 @@ h3.entity-name {
     border-bottom: 1px solid;
     margin-block-start: 0px;
     margin-block-end: 0px;
+}
+
+.entity-depiction{
+    max-width:100%;
+    margin-right: auto;
+    margin-left: auto;
 }
 
 .type-c {
@@ -91,11 +98,28 @@ dt {
 .example {
     display: none;
     clear: both;
+    border: 1px #d8bd64;
+}
+
+.example-button {
+    display: block;
+    width: 100%;
+    height: 25px;
+    background: #d8bd64;
+    border: none;
+    text-align: left;
+    color: #ffffff;
+    margin-bottom: 2px;
 }
 
 .example:target  {
     display: block;
 }
+
+a:hover.example-link, a:visited.example-link, a:link.example-link, a:active.example-link {
+    text-decoration: none;
+}
+
 
 .description {
     border: 1px dashed #2F6FAB;
